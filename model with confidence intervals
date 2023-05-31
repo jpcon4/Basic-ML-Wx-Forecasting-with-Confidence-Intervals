@@ -49,7 +49,7 @@ steps = number of hours/days/months
 #set up Random Forest, can customize estimators and depth
 regressor = RandomForestRegressor(n_estimators=250, max_depth=8, random_state=123)
 
-#define forecaster, lags for how far back predictor goes
+#define forecaster, lags for how far back predictor goes to make prediction
 forecaster = ForecasterAutoreg(regressor = regressor, lags = 168)
 
 #fit forecaster
