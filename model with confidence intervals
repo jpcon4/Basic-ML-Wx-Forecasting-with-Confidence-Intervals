@@ -24,7 +24,7 @@ data = data.convert(units.imperial)
 #fetch data
 data = data.fetch()
 
-#print data
+#print data to ensure data quality and numbers
 print(data)
 
 #drop undesired columns from fetched data
