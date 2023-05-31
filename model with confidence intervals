@@ -1,0 +1,59 @@
+from datetime import datetime
+from meteostat import Hourly/Daily/Monthly, Stations, units, Point
+import numpy as np
+import pandas as pd
+from skforecast.ForecasterAutoreg import ForecasterAutoreg
+from sklearn.ensemble import RandomForestRegressor
+
+import warnings
+warnings.filterwarnings('ignore')
+
+#time period
+start = datetime(yyyy, mm, dd)
+end = datetime(yyyy, mm, dd)
+
+#call point of weather data
+point = Point(lat, long, optional elevation)
+
+#get hourly data, normalize data, interpolate data over # hours if NaN values, convert to imperial units
+data = Hourly/Daily/Monthly(point, start, end)
+data = data.normalize()
+data = data.interpolate(limit = # of hours)
+data = data.convert(units.imperial)
+
+#fetch data
+data = data.fetch()
+
+#print data
+print(data)
+
+#drop undesired columns from fetched data
+data = data.drop(columns = 'xxx')
+
+#convert wind speed to knots
+data['wind'] = (data['wspd']*0.868976)
+
+#drop old wind speed column
+data = data.drop(columns = 'wspd')
+
+#choose target variable from available columns
+target_variable = 'temp'
+
+#define target and exogenous variables
+y = data[target_variable]
+exog = data.drop(target_variable, axis=1)
+
+#number of hours/days/months to forecast for
+steps = 48
+
+#set up Random Forest
+regressor = RandomForestRegressor(n_estimators=250, max_depth=8, random_state=123)
+
+#define forecaster
+forecaster = ForecasterAutoreg(regressor = regressor, lags = 168)
+
+#fit forecaster
+forecaster.fit(y, exog=exog)
+
+#create forecast
+predictions_temp = forecaster.predict_interval(steps=steps, exog=exog, interval=[25, 75])
