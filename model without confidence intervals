@@ -55,5 +55,5 @@ forecaster = ForecasterAutoreg(regressor = regressor, lags = 168)
 #fit forecaster
 forecaster.fit(y, exog=exog)
 
-#create forecast, intervals must add to 100
+#create forecast
 predictions_temp = forecaster.predict(steps=steps, exog=exog)
